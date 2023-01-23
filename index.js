@@ -23,7 +23,7 @@ io.on("connection", (socket) => {
             if (err) {
                 console.log(err);
             } else {
-                console.log("\n"+historyFile, "utf8");
+                console.log(historyFile+"\n", "utf8");
             }
         });
         io.emit("message", message);
@@ -33,6 +33,7 @@ io.on("connection", (socket) => {
 http.listen(port, () => {
     console.log("server running at port "+port);
 
+    // Create history file if it doesn't exists
     let historyFile = "history.txt"
     if (!fs.existsSync(historyFile)) {
         console.log(historyFile + "doesn't exists so we are about to create one")
@@ -44,3 +45,8 @@ http.listen(port, () => {
         console.log(historyFile + " already exists");
     }
 })
+
+app.get("/getHistory", (request, response) => {
+    let array = fs.readFileSync("history.txt").toString().split("\n");
+    response.send(array);
+});
